@@ -9,15 +9,15 @@
 
 using namespace std;
 
-const int N = 1000001;
+const unsigned int N = 1000000000;
 
-uint solution(vector<int>& A)
+uint solution(vector<uint>& A)
 {
 	bitset<N> paired;
 	bitset<N> occurred;
 	for(uint i = 0; i < A.size(); i++)
 	{
-		int j = A[i];
+		uint j = A[i];
 
 		// We allow duplicates, i.e. multiple values beyond first pair,
 		// so we are basically flagging odd numbers of occurrences of specific numbers
@@ -54,45 +54,45 @@ uint solution(vector<int>& A)
 
 TEST(OddOccurrencesInArray, Trivial)
 {
-	printf("N: %d\n", N);
+	printf("N: %u, size: %lu\n", N, sizeof(bitset<N>));
 
-	vector<int> A{9, 3, 9, 3, 9, 7, 9};
+	vector<uint> A{9, 3, 9, 3, 9, 7, 9};
 	EXPECT_EQ(solution(A), 7);
 
-	vector<int> B{9, 3, 9, 3, 10, 10}; // no unpaired numbers
+	vector<uint> B{9, 3, 9, 3, 10, 10}; // no unpaired numbers
 	ASSERT_THROW(solution(B), runtime_error);
 
-	vector<int> C{9, 3, 9, 3, 9, 10, 10, 0};
+	vector<uint> C{9, 3, 9, 3, 9, 10, 10, 0};
 	EXPECT_THROW(solution(C), runtime_error); // multiple unique values
 
-	vector<int> D{9, 3, 9, 3, 49, 11, 11 };
+	vector<uint> D{9, 3, 9, 3, 49, 11, 11 };
 	EXPECT_EQ(solution(D), 49);
 
-	vector<int> E{9, 3, 9, 3, 37, 49, 11, 11 }; // multiple unique values
+	vector<uint> E{9, 3, 9, 3, 37, 49, 11, 11 }; // multiple unique values
 	EXPECT_THROW(solution(E), runtime_error);
 }
 
-int myrandom (int i) { return std::rand()%i; }
+uint myrandom (uint i) { return std::rand()%i; }
 
 TEST(OddOccurrencesInArray, Randomized)
 {
 	srand ( unsigned ( time(0) ) );
-	for(int j=0; j<100;++j)
+	for(uint j=0; j<100;++j)
 	{
-		vector<int> vec_sizes{1000000};
-		for(int vs: vec_sizes)
+		vector<uint> vec_sizes{1000000};
+		for(uint vs: vec_sizes)
 		{
-			vector<int> a(vs+1);
-			set<int> s;
+			vector<uint> a(vs+1);
+			set<uint> s;
 			while(s.size() < vs/2)
 				s.insert(myrandom(N));
-			for(int i: s)
+			for(uint i: s)
 			{
 				a.push_back(i);
 				a.push_back(i);
 			}
 
-			int other = 0;
+			uint other = 0;
 			/*if(myrandom(100) >= 90)
 			{
 				other = myrandom(N);
@@ -100,7 +100,7 @@ TEST(OddOccurrencesInArray, Randomized)
 			}
 			else*/
 			{
-				pair<set<int>::iterator,bool> ret;
+				pair<set<uint>::iterator,bool> ret;
 				while(s.size() < (vs/2+1))
 					ret = s.insert(myrandom(N));
 				other = *ret.first;
