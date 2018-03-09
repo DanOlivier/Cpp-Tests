@@ -10,27 +10,11 @@ find_package(GTest REQUIRED)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
 find_package(Boost COMPONENTS system filesystem REQUIRED)
 
-add_executable(test1 main.cpp)
-
-target_link_libraries(test1 pthread)
-
 add_executable(test2 test2.cpp)
 target_link_libraries(test2 boost_filesystem boost_system pthread)
 
-add_executable(bip-test-server bip-test-server.cpp)
-target_link_libraries(bip-test-server pthread rt)
-
-add_executable(bip-test-client bip-test-client.cpp)
-target_link_libraries(bip-test-client pthread rt)
-
-
-#add_executable(test3 test3.cpp)
-#set_source_files_properties(test3.cpp PROPERTIES COMPILE_FLAGS -D_FORTIFY_SOURCE=2)
-
-add_executable(unshare unshare.c)
-
-add_executable(binarygap binarygap.cpp)
-target_link_libraries(binarygap gtest_main gtest)
+add_executable(BinaryGap BinaryGap.cpp)
+target_link_libraries(BinaryGap gtest_main gtest)
 
 add_executable(OddOccurrencesInArray OddOccurrencesInArray.cpp)
 target_link_libraries(OddOccurrencesInArray gtest_main gtest)
