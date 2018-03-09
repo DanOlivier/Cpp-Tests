@@ -1,0 +1,100 @@
+#include "gtest/gtest.h"
+
+#include <array>
+#include <string>
+
+const uint MAX_VAL = 100;
+
+using namespace std;
+
+template<uint N>
+bool get_bit(const array<char, N>& array, uint j)
+{
+	return array[j / 8] & (1 << (j % 8));
+}
+
+template<uint N>
+void set_bit(array<char, N>& array, uint j)
+{
+	array[j / 8] |= (1 << (j % 8));
+}
+
+template<uint N>
+void clear_bit(array<char, N>& array, uint j)
+{
+	array[j / 8] &= ~(1 << (j % 8));
+}
+
+template<uint N>
+string print_array(array<char, N>& array)
+{
+	string result;
+	for(uint i = 0; i < N; i++)
+	{
+		//#pragma unroll
+		for(uint j = 0; j < sizeof(char)*8; j++)
+		{
+			result += get_bit<N>(array, i*8 + j) ? '1' : '0';
+		}
+		result += '|';
+	}
+	return result;
+}
+
+template<uint N>
+array<char, N> countOccurrences(int A[], uint n)
+{
+	//static_assert(N >= sizeof(int));
+	array<char, N> paired{0};
+	array<char, N> occurred{0};
+	for(uint i = 0; i < n; i++)
+	{
+		int j = A[i];
+		if(j >= MAX_VAL)
+			throw runtime_error("Value exceeds maximum allowed!");
+
+		if(get_bit<N>(occurred, j))
+			set_bit<N>(paired, j);
+		else
+			set_bit<N>(occurred, j);
+	}
+	array<char, N> unpaired{0};
+	for(uint i = 0; i < N; i++)
+	{
+		unpaired[i] = occurred[i] & ~paired[i];
+	}
+	cout << "occurred: " << print_array<N>(occurred) << "\n";
+	cout << "paired  : " << print_array<N>(paired)   << "\n";
+	cout << "unpaired: " << print_array<N>(unpaired) << "\n";
+	return unpaired;
+}
+
+constexpr uint div_up(uint n, uint d) {
+    return (n / d) + (n % d);
+} //i.e. +1 iff (not exact int && positive result)
+constexpr uint N = div_up(MAX_VAL, sizeof(char)*8);
+
+uint solution(int A[], uint n)
+{
+	array<char, N> unpaired = countOccurrences<N>(A, n);
+	for(uint i = 0; i < MAX_VAL; i++)
+		if(get_bit<N>(unpaired, i))
+			return i;
+	throw runtime_error("No unpaired numbers found!");
+	return 0;
+}
+
+TEST(OddOccurrencesInArray, Trivial)
+{
+	array<int, 7> A{9, 3, 9, 3, 9, 7, 9};
+	EXPECT_EQ(solution(A.data(), A.size()), 7);
+
+	array<int, 7> B{9, 3, 9, 3, 9, 10, 10};
+	ASSERT_THROW(solution(B.data(), B.size()), runtime_error);
+
+	array<int, 8> C{9, 3, 9, 3, 9, 10, 10, 0};
+	EXPECT_EQ(solution(C.data(), C.size()), 0);
+
+	array<int, 8> D{9, 3, 9, 3, 9, 10, 11, 11 };
+	EXPECT_EQ(solution(D.data(), D.size()), 10);
+}

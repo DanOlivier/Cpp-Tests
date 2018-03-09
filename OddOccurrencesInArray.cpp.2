@@ -1,0 +1,45 @@
+#include "gtest/gtest.h"
+
+#include <array>
+#include <cmath>
+
+using namespace std;
+
+template<typename PT, int N>
+array<PT, N> countOccurrences(int A[], int n)
+{
+	//static_assert(N >= sizeof(int));
+	array<PT, N> result;
+	for(int i = 0; i < n; i++)
+	{
+		int j = A[i];
+		constexpr int byte = sizeof(PT);
+		result[j / byte] &= (1 << (j % byte));
+	}
+	return result;
+}
+
+constexpr int div_up(int n, int d) {
+    return n / d + (((n < 0) ^ (d > 0)) && (n % d));
+} //i.e. +1 iff (not exact int && positive result)
+constexpr int width = div_up(1000000, sizeof(char));
+
+int solution(int A[], int N)
+{
+	array<char, width> occ = countOccurrences<width>(A, N);
+	for(char i : occ)
+		for(uint j = 0; j < sizeof(char); i++)
+			if(!i[j])
+				return i*8+j;
+	return 0;
+}
+
+TEST(OddOccurrencesInArray, Trivial)
+{
+	array<int, 7> A{9, 3, 9, 3, 9, 7, 9};
+	EXPECT_EQ(solution(A.data(), 7), 7);
+
+	array<int, 7> B{9, 3, 9, 3, 9, 1000000, 1000000};
+	EXPECT_EQ(solution(A.data(), 7), 7);
+
+}
