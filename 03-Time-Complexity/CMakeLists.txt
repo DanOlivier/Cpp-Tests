@@ -1,0 +1,2 @@
+add_executable(PermMissingElem PermMissingElem.cpp)
+target_link_libraries(PermMissingElem gtest_main gtest)
