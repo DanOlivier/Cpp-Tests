@@ -3,9 +3,9 @@ target_link_libraries(FrogRiverOne gtest_main gtest)
 
 #add_executable(MaxCounters MaxCounters.cpp)
 #target_link_libraries(MaxCounters gtest_main gtest)
-#
-#add_executable(MissingInteger MissingInteger.cpp)
-#target_link_libraries(MissingInteger gtest_main gtest)
-#
+
+add_executable(MissingInteger MissingInteger.cpp)
+target_link_libraries(MissingInteger gtest_main gtest)
+
 #add_executable(PermCheck PermCheck.cpp)
 #target_link_libraries(PermCheck gtest_main gtest)
