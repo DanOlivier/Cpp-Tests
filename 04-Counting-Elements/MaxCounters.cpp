@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <vector>
-#include <unordered_set>
+#include <unordered_map>
 #include <algorithm>
 
 using namespace std;
@@ -8,18 +8,26 @@ using namespace std;
 // one-based indices
 vector<uint> solution(uint N, const vector<uint>& A)
 {
+    uint max_max_counter = 0;
     uint max_counter = 0;
-    vector<uint> result(N);
+    unordered_map<uint, uint> counters;
     for(auto a: A)
     {
         if(a == N+1)
         {
-            fill(result.begin(), result.end(), max_counter);
+            counters.clear();
+            max_max_counter += max_counter;
+            max_counter = 0;
             continue;
         }
-        result[a-1]++;
-        max_counter = max(max_counter, result[a-1]);
+        uint& c = counters[a-1];
+        c += 1;
+        max_counter = max(max_counter, c);
     }
+    vector<uint> result(N);
+    fill(result.begin(), result.end(), max_max_counter);
+    for(auto& c: counters)
+        result[c.first] += c.second;
     return result;
 }
 
