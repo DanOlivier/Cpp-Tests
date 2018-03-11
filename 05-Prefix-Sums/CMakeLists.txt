@@ -9,3 +9,6 @@ target_link_libraries(PassingCars gtest_main gtest)
 
 add_executable(GenomicRangeQuery GenomicRangeQuery.cpp)
 target_link_libraries(GenomicRangeQuery gtest_main gtest)
+
+add_executable(MinAvgTwoSlice MinAvgTwoSlice.cpp)
+target_link_libraries(MinAvgTwoSlice gtest_main gtest)

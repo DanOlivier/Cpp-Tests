@@ -51,10 +51,10 @@ vector<uint> solution(const string& S, const vector<uint>& P, const vector<uint>
         default:
             throw runtime_error("Invalid nucleotide character");
         }
-        prefix_A[i+1] += countA;
-        prefix_C[i+1] += countC;
-        prefix_G[i+1] += countG;
-        prefix_T[i+1] += countT;
+        prefix_A[i+1] = countA;
+        prefix_C[i+1] = countC;
+        prefix_G[i+1] = countG;
+        prefix_T[i+1] = countT;
     }
     countA = 0, countC = 0, countG = 0, countT = 0;
     for(uint i = N-1; ; --i)
