@@ -6,18 +6,18 @@ using namespace std;
 
 int solution(const vector<int>& A)
 {
-	int counted_1 = 0;
+	int eastbound = 0;
 	int passing_sum = 0;
 	vector<int>::const_reverse_iterator it = A.rbegin(), it2 = A.rend(); 
 	for(; it != it2; ++it)
 	{
 		if(*it)
 		{
-			counted_1++;
+			eastbound++;
 		}
 		else
 		{
-			passing_sum += counted_1;
+			passing_sum += eastbound;
 			if(passing_sum >  1000000000)
 				return -1;
 		}
