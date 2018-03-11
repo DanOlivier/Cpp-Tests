@@ -6,3 +6,6 @@ target_link_libraries(CountDiv gtest_main gtest)
 
 add_executable(PassingCars PassingCars.cpp)
 target_link_libraries(PassingCars gtest_main gtest)
+
+add_executable(GenomicRangeQuery GenomicRangeQuery.cpp)
+target_link_libraries(GenomicRangeQuery gtest_main gtest)
