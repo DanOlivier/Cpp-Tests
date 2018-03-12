@@ -24,7 +24,7 @@ pair<bool,Fish*> fight(Fish& f1, Fish& f2)
     return make_pair(false,(Fish*)0);
 }
 
-int solution(vector<int> &A, vector<int> &B)
+int solution(const vector<int> &A, const vector<int> &B)
 {
     if(A.size() != B.size())
         return -1;
@@ -32,7 +32,7 @@ int solution(vector<int> &A, vector<int> &B)
         return -1;
 
     stack<Fish> fish;
-    for(vector<int>::iterator 
+    for(vector<int>::const_iterator 
         it = A.begin(), it2 = A.end(),
         it3 = B.begin();
         it != it2; ++it, ++it3)
@@ -76,7 +76,7 @@ bitset<N> random_bitset(double p = 0.5)
     mt19937 gen( rd());
     bernoulli_distribution d( p);
 
-    for( int n = 0; n < N; ++n) {
+    for( uint n = 0; n < N; ++n) {
         bits[n] = d(gen);
     }
 
@@ -85,86 +85,47 @@ bitset<N> random_bitset(double p = 0.5)
 
 TEST(Fish, Trivial)
 {
-    {
-        vector<int> A{4};
-        vector<int> B{0};
-        EXPECT_EQ(solution(A, B), 1);
-        B[0] = 1;       
-        EXPECT_EQ(solution(A, B), 1);       
-    }
-    {
-        vector<int> A{4,3};
-        vector<int> B{0,1};
-        EXPECT_EQ(solution(A, B), 2);       
-    }
-    {
-        vector<int> A{4,3};
-        vector<int> B{1,0};
-        EXPECT_EQ(solution(A, B), 1);       
-    }
-    {
-        vector<int> A{4,3,5};
-        vector<int> B{1,0,0};
-        EXPECT_EQ(solution(A, B), 1);       
-    }
-    {
-        vector<int> A{4,3,5};
-        vector<int> B{0,1,1};
-        EXPECT_EQ(solution(A, B), 3);       
-    }
-    {
-        vector<int> A{4,3,2,1,5};
-        vector<int> B{0,1,0,0,0};
-        EXPECT_EQ(solution(A, B), 2);       
-    }
-    {
-        vector<int> A{9,4,3,2,1,5};
-        vector<int> B{1,0,1,0,0,0};
-        EXPECT_EQ(solution(A, B), 1);       
-    }
-    {
-        vector<int> A{6,7,8,9,4,3,2,1,5};
-        vector<int> B{1,1,1,1,0,1,0,0,0};
-        EXPECT_EQ(solution(A, B), 4);       
-    }
+    EXPECT_EQ(solution(vector<int>{4}, vector<int>{0}), 1);
+    EXPECT_EQ(solution(vector<int>{4}, vector<int>{1}), 1);
 
-    {
-        // all except one fish flowing in the same direction
-        vector<int> A{1,2,3,4,5,6,7,8,9,10};
-        vector<int> B{1,1,1,1,1,1,1,1,1,0};
-        EXPECT_EQ(solution(A, B), 1);       
-    }
-    {
-        // all except one fish flowing in the same direction
-        vector<int> A{10,9,8,7,6,5,4,3,2,1};
-        vector<int> B{ 0,0,0,0,0,0,0,0,0,1};
-        //EXPECT_EQ(solution(A, B), 10);       
-    }
+    EXPECT_EQ(solution(vector<int>{4,3}, vector<int>{0,1}), 2);
+    EXPECT_EQ(solution(vector<int>{4,3}, vector<int>{1,0}), 1);
 
+    EXPECT_EQ(solution(vector<int>{4,3,5}, vector<int>{1,0,0}), 1);
+    EXPECT_EQ(solution(vector<int>{4,3,5}, vector<int>{0,1,1}), 3);
+
+    EXPECT_EQ(solution(vector<int>{4,3,2,1,5}, vector<int>{0,1,0,0,0}), 2);
+    EXPECT_EQ(solution(vector<int>{9,4,3,2,1,5}, vector<int>{1,0,1,0,0,0}), 1);
+    EXPECT_EQ(solution(vector<int>{6,7,8,9,4,3,2,1,5}, vector<int>{1,1,1,1,0,1,0,0,0}), 4);
+    // all except one fish flowing in the same direction
+    EXPECT_EQ(solution(vector<int>{1,2,3,4,5,6,7,8,9,10}, vector<int>{1,1,1,1,1,1,1,1,1,0}), 1);
+
+    // all except one fish flowing in the same direction
+    //EXPECT_EQ(solution(vector<int>{10,9,8,7,6,5,4,3,2,1}, vector<int>{ 0,0,0,0,0,0,0,0,0,1}), 10);
+}
+
+TEST(Fish, Randomized)
+{
+    constexpr int MAX_VAL = 1000000000;
+    //for(int j=0; j<100;++j)
     {
-        constexpr int MAX_VAL = 1000000000;
-        //for(int j=0; j<100;++j)
+        // fish of various unique sizes
+        vector<uint> vec_sizes{10, 100, 1000, 10000, 100000};
+        for(uint vs: vec_sizes)
         {
-            // fish of various unique sizes
-            vector<int> vec_sizes{10, 100, 1000, 10000, 100000};
-            for(int vs: vec_sizes)
+            vector<int> a(vs);
+            vector<int> b(vs);
+            set<int> s;
+            while(s.size() < vs)
+                s.insert(myrandom(MAX_VAL));
+            bitset<100000> dir = random_bitset<100000>();
+            int j = 0;
+            for(int i: s)
             {
-                vector<int> a(vs);
-                vector<int> b(vs);
-                set<int> s;
-                while(s.size() < vs)
-                    s.insert(myrandom(MAX_VAL));
-                bitset<100000> dir = random_bitset<100000>();
-                int j = 0;
-                for(int i: s)
-                {
-                    a.push_back(i);
-                    b.push_back(dir[j++]);
-                }
-                solution(a, b);       
+                a.push_back(i);
+                b.push_back(dir[j++]);
             }
+            solution(a, b);       
         }
     }
 }
-
-
