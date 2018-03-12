@@ -7,19 +7,14 @@ using namespace std;
 
 int solution(const vector<int> &A)
 {
+    uint N = A.size();
     vector<int> B(A);
     sort(B.begin(), B.end(), [=](int a, int b) {
         return a > b; 
     });
-    vector<int> C(A);
-    sort(C.begin(), C.end(), [=](int a, int b) {
-        return abs(a) > abs(b); 
-    });
 
-    auto first = B.begin();
-    auto last = B.end()-1;
-    auto p1 = *(first) * (*(first+1)) * (*(first+2));
-    auto p2 = (*(first)) * (*last) * (*(last-1));
+    int p1 = B[0] * B[1] * B[2];
+    int p2 = B[0] * B[N-1] * B[N-2];
     return max(p1, p2);
 }
 

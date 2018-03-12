@@ -13,6 +13,11 @@ double calc_avg(const vector<int>& A, int i, int j)
     return double(sum)/(j-i+1);
 }
 
+uint count_total(const vector<uint>& P, uint x, uint y)
+{
+    return P[y + 1] - P[x];
+}
+
 int solution(const vector<int> &A)
 {
     uint N = A.size();
@@ -28,19 +33,27 @@ int solution(const vector<int> &A)
     //copy( prefix_sum.begin(), prefix_sum.end(), out_it ); cout << endl;
     double min_avg = INT_MAX;
     uint min_i = 0, min_j = N;
-    for(uint i = 0; i < N; ++i)
+    for(uint i = 0; i < N-1; ++i)
     {
-        for(uint j = i+1; j < N; ++j)
+        int diff = count_total(prefix_sum, i, i+1);
+        double avg = double(diff)/2;
+        //cout << "avg: " << avg << ", at [" << i << "-" << j << "]";// << endl;
+        //cout << " calculated: " << calc_avg(A, i, j) << endl;
+        if(avg < min_avg)
         {
-            int diff = prefix_sum[j+1] - prefix_sum[i];
-            double avg = double(diff)/(j-i+1);
-            //cout << "avg: " << avg << ", at [" << i << "-" << j << "]";// << endl;
-            //cout << " calculated: " << calc_avg(A, i, j) << endl;
+            min_avg = avg;
+            min_i = i;
+            min_j = i+1;
+        }
+        if(i < N-2)
+        {
+            int diff = count_total(prefix_sum, i, i+2);
+            double avg = double(diff)/3;
             if(avg < min_avg)
             {
                 min_avg = avg;
                 min_i = i;
-                min_j = j;
+                min_j = i+2;
             }
         }
     }
@@ -55,5 +68,6 @@ TEST(MinAvgTwoSlice, Trivial)
     EXPECT_EQ(solution(vector<int>{1, 3, 1}), 0);
     EXPECT_EQ(solution(vector<int>{10, 10, 1}), 1);
     EXPECT_EQ(solution(vector<int>{10, 1, 1}), 1);
+    EXPECT_EQ(solution(vector<int>{10, -1, 1, 1, 1, -1}), 1);
 }
 
