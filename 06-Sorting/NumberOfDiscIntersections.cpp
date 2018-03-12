@@ -14,13 +14,25 @@ struct Circle {
     int r;
 };
 
+enum class OpenCloseBoth { OPEN, CLOSE, BOTH };
+const char* print(OpenCloseBoth c)
+{
+    switch(c)
+    {
+    case OpenCloseBoth::OPEN:  return "OPEN";
+    case OpenCloseBoth::CLOSE: return "CLOSE";
+    case OpenCloseBoth::BOTH:  return "BOTH";
+    }
+    return 0;
+}
+
 struct CircleIntersection
 {
-    CircleIntersection(bool _open, int _x, Circle* _pCircle) :
-        open(_open), x(_x), pCircle(_pCircle) { }
-    bool open;
+    CircleIntersection(OpenCloseBoth _open, int _x, uint _pCircle) :
+        open(_open), x(_x), iCircle(_pCircle) { }
+    OpenCloseBoth open;
     int x;
-    Circle* pCircle;
+    uint iCircle;
 };
 
 struct IntersectCompare {
@@ -40,55 +52,96 @@ int solution(const vector<int>& A)
     copy(A.begin(), A.end(), out_it ); cout << endl;
 
     vector<Circle> circles; circles.reserve(N);
-    typedef multiset<CircleIntersection, IntersectCompare> IntersectionSetType;
+    typedef map<int, vector<CircleIntersection>> IntersectionSetType;
     IntersectionSetType intersections;
     for(uint i = 0; i < N; ++i)
     {
         int r = A[i];
         circles.push_back(Circle(i, r));
-        intersections.insert(CircleIntersection(true, i-r, &circles[i]));
-        intersections.insert(CircleIntersection(false, i-r, &circles[i]));
+        if(r == 0)
+        {
+            intersections[i].push_back(CircleIntersection(OpenCloseBoth::BOTH, i-r, i));
+            continue;
+        }
+        
+        intersections[i-r].push_back(CircleIntersection(OpenCloseBoth::OPEN, i-r, i));
+        intersections[i+r].push_back(CircleIntersection(OpenCloseBoth::CLOSE, i+r, i));
     }
-    // sort(D.begin(), D.end(), [&](const pair<int,int>& a, const pair<int,int>& b){
-    //     return a.first < b.first;
-    // });
 
     // Travel along x-axis towards the right
-    vector<Circle*> openCircles;
-    for(auto& ci: intersections)
+    vector<uint> openCircles;
+    int nbIntersections = 0;
+    for(auto& i: intersections)
     {
-        printf("Circle %p, is %s at x=%d\n", ci.pCircle, ci.open ? "open" : "closed", ci.x);
-        if(ci.open)
+        int x = i.first;
+        printf("----- Processing %lu intersections at x=%d\n", i.second.size(), x);
+        for(auto& ci: i.second)
         {
-            for(auto oc: openCircles)
+            Circle& c2 = circles[ci.iCircle];
+            printf("Circle %d  [x=%d, r=%d], is %s at x=%d\n", ci.iCircle, c2.x, c2.r, print(ci.open), ci.x);
+            if(ci.open == OpenCloseBoth::OPEN || ci.open == OpenCloseBoth::BOTH)
             {
-                
+                openCircles.push_back(ci.iCircle);
             }
-            openCircles.push_back(ci.pCircle);
         }
-        else
+
+        for(auto& ci: i.second)
         {
-            vector<Circle*>::iterator it = find(openCircles.begin(), openCircles.end(), ci.pCircle);
-            if(it != openCircles.end())
-                openCircles.erase(it);
+            if(ci.open == OpenCloseBoth::OPEN)
+                continue;
+
+            for(auto& oc: openCircles)
+            {
+                if(oc == ci.iCircle)
+                {
+                    continue;
+                }
+                Circle& c = circles[oc];
+                Circle& c2 = circles[ci.iCircle];
+                if(c.x - c.r >= (x - 2*c2.r))
+                {
+                    printf("==> Circle %d [x=%d, r=%d], intersects with %d [x=%d, r=%d] at x=%d\n", 
+                        ci.iCircle, c2.x, c2.r, 
+                        oc, c.x, c.r, ci.x);
+                    nbIntersections++;
+                }
+            }
+        }
+        for(auto& ci: i.second)
+        {
+            if(ci.open == OpenCloseBoth::OPEN)
+                continue;
+            
+            vector<uint>::iterator it = openCircles.begin(), 
+                it2 = openCircles.end();
+            for(; it != it2; ++it)
+            {
+                auto& oc = *it;
+                if(oc == ci.iCircle)
+                {
+                    it = openCircles.erase(it);
+                    break;
+                }
+            }
         }
     }
-    cout << endl;
-    return 0;
+    EXPECT_EQ(openCircles.size(), 0);
+    cout << "Result: " << nbIntersections << endl << endl;
+    return nbIntersections;
 }
 
 TEST(NumberOfDiscIntersections, Trivial)
 {
-    EXPECT_EQ(solution(vector<int>{0, 0}), 0);
-    EXPECT_EQ(solution(vector<int>{0, 1}), 1);
-    EXPECT_EQ(solution(vector<int>{1, 1}), 1);
-    EXPECT_EQ(solution(vector<int>{1, 2}), 1);
-    EXPECT_EQ(solution(vector<int>{1, 3}), 0);
-    EXPECT_EQ(solution(vector<int>{2, 1}), 1);
-    EXPECT_EQ(solution(vector<int>{2, 2}), 1);
-    EXPECT_EQ(solution(vector<int>{1, 0, 1}), 1);
-    EXPECT_EQ(solution(vector<int>{2, 0, 0, 0, 2}), 1);
-    EXPECT_EQ(solution(vector<int>{2, 0, 0, 0, 0, 2}), 0);
+    //EXPECT_EQ(solution(vector<int>{0, 0}), 0);
+    //EXPECT_EQ(solution(vector<int>{0, 1}), 1);
+    //EXPECT_EQ(solution(vector<int>{1, 1}), 1);
+    //EXPECT_EQ(solution(vector<int>{1, 2}), 1);
+    //EXPECT_EQ(solution(vector<int>{1, 3}), 0);
+    //EXPECT_EQ(solution(vector<int>{2, 1}), 1);
+    //EXPECT_EQ(solution(vector<int>{2, 2}), 1);
+    //EXPECT_EQ(solution(vector<int>{1, 0, 1}), 3);
+    //EXPECT_EQ(solution(vector<int>{2, 0, 0, 0, 2}), 3);
+    //EXPECT_EQ(solution(vector<int>{2, 0, 0, 0, 0, 2}), 2);
     EXPECT_EQ(solution(vector<int>{1, 5, 2, 1, 4, 0}), 11);
 }
 
