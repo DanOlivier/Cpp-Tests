@@ -1,7 +1,7 @@
-#include "gtest/gtest.h"
 
 #include <vector>
 #include <algorithm>
+#include <iostream>
 #include <limits.h>
 
 using namespace std;
@@ -60,6 +60,8 @@ int solution(const vector<int> &A)
     //cout << "min_avg: " << min_avg << ", at (" << min_i << ", " << min_j << ")" << endl;
     return min_i;
 }
+
+#include "gtest/gtest.h"
 
 TEST(MinAvgTwoSlice, Trivial)
 {
