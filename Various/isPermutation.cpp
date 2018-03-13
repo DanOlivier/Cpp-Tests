@@ -1,7 +1,7 @@
-#include "gtest/gtest.h"
-
 #include <array>
 #include <string>
+#include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -76,7 +76,7 @@ public:
 
 
 const int MAX_VAL2 = 101;
-int solution(vector<int> &A)
+int solution(const vector<int> &A)
 {
 	BitField<uint64_t, MAX_VAL2> occurred;
 	for(uint i = 0; i < A.size(); i++)
@@ -115,28 +115,15 @@ int solution(vector<int> &A)
 	return (z == N ? 1 : 0);
 }*/
 
+#include "gtest/gtest.h"
+
 TEST(isPermuation, Trivial)
 {
-	{
-		vector<int> A{1};
-		EXPECT_EQ(solution(A), 1);
-	}
-	{
-		vector<int> A{1,3};
-		EXPECT_EQ(solution(A), 0);
-	}
-	{
-		vector<int> A{1,2};
-		EXPECT_EQ(solution(A), 1);
-	}
-	{
-		vector<int> A{1,3,2,4};
-		EXPECT_EQ(solution(A), 1);
-	}
-	{
-		vector<int> A{9,8,7,6,5,4,3,2};
-		EXPECT_EQ(solution(A), 0);
-	}
+	EXPECT_EQ(solution(vector<int>{1}), 1);
+	EXPECT_EQ(solution(vector<int>{1,3}), 0);
+	EXPECT_EQ(solution(vector<int>{1,2}), 1);
+	EXPECT_EQ(solution(vector<int>{1,3,2,4}), 1);
+	EXPECT_EQ(solution(vector<int>{9,8,7,6,5,4,3,2}), 0);
 	{
 		vector<int> A{
 			 1, 2, 3, 4, 5, 6, 7, 8, 9,10,

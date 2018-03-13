@@ -10,8 +10,12 @@ A[R] + A[P] > A[Q].
 ```
 For example, consider array A such that:
 ```
-  A[0] = 10    A[1] = 2    A[2] = 5
-  A[3] = 1     A[4] = 8    A[5] = 20
+  A[0] = 10
+  A[1] = 2
+  A[2] = 5
+  A[3] = 1
+  A[4] = 8
+  A[5] = 20
 ```
 Triplet (0, 2, 4) is triangular.
 
@@ -24,13 +28,20 @@ exists a triangular triplet for this array and returns 0 otherwise.
 
 For example, given array A such that:
 ```
-  A[0] = 10    A[1] = 2    A[2] = 5
-  A[3] = 1     A[4] = 8    A[5] = 20
+  A[0] = 10
+  A[1] = 2
+  A[2] = 5
+  A[3] = 1
+  A[4] = 8
+  A[5] = 20
 ```
 the function should return 1, as explained above. 
+
 Given array A such that:
 ```
-  A[0] = 10    A[1] = 50    A[2] = 5
+  A[0] = 10
+  A[1] = 50
+  A[2] = 5
   A[3] = 1
 ```
 the function should return 0.
