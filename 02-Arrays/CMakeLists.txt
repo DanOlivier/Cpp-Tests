@@ -1,0 +1,6 @@
+add_executable(CyclicRotation CyclicRotation.cpp)
+target_link_libraries(CyclicRotation gtest_main gtest pthread)
+
+add_executable(OddOccurrencesInArray OddOccurrencesInArray.cpp)
+target_link_libraries(OddOccurrencesInArray gtest_main gtest pthread)
+

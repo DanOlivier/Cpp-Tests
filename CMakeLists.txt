@@ -26,3 +26,4 @@ add_subdirectory(09-Maximum-slice-problem)
 add_subdirectory(10-Prime-and-composite-numbers)
 
 add_subdirectory(Various)
+add_subdirectory(Unity-Test)

@@ -130,7 +130,7 @@ TEST(OddOccurrencesInArray, Randomized)
 	validateForVectorSize(3);
 	validateForVectorSize(5);
 
-	for(uint j = 0; j < 100; ++j)
+	for(uint j = 0; j < 10; ++j)
 	{
 		uint vs = myrandom(1000000); // random vector size
 		if(!(vs % 2)) vs++; // make sure it's odd
