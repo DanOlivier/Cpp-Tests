@@ -12,16 +12,17 @@ int solution(const vector<int> &B)
     if(N < 3)
         return 0;
     vector<int> A(B);
-    sort(A.begin(), A.end());
+    sort(A.begin(), A.end(), greater<int>());
 
     for(uint i = 0; i <= N-2; i++)
     {
-        int j = i+1, k = j+1;
         //printf("(%d, %u, %u)\n", i, j, k);
-        bool b1 = (long(A[i]) + A[j] > A[k]);
-        bool b2 = (long(A[j]) + A[k] > A[i]);
-        bool b3 = (long(A[k]) + A[i] > A[j]);
-        if(b1 && b2 && b3)
+        bool b1 = (A[i]   < long(A[i+1]) + A[i+2]);
+        // With the array sorted, if the 1st inequality holds,
+        // the other two are guaranteed to also be true
+        //bool b2 = (A[i+1] < long(A[i+2]) + A[i]);
+        //bool b3 = (A[i+2] < long(A[i])   + A[i+1]);
+        if(b1)// && b2 && b3)
         {
             //printf("result: %d\n", 1);
             return 1;
