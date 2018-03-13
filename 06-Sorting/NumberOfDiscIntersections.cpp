@@ -1,36 +1,26 @@
-#include <gtest/gtest.h>
-
 #include <vector>
-#include <map>
-#include <list>
-#include <stack>
-#include <iostream>
+//#include <iostream>
+//#include <iterator>
+#include <algorithm>
+#include <stdexcept>
 
 using namespace std;
 
-struct Circle {
-    Circle(int _x, int _r) : x(_x), r(_r) {}
-    int x;
-    int r;
-};
-
 struct IntersectionEvent
 {
-    IntersectionEvent(bool _open, int _x, uint _pCircle) :
-        open(_open), x(_x), iCircle(_pCircle) { }
+    IntersectionEvent(bool _open, long _x) : open(_open), x(_x) { }
     bool open;
-    int x;
-    uint iCircle;
+    long x;
 };
 
-ostream_iterator<int> out_it (cout,", ");
+/*ostream_iterator<int> out_it (cout,", ");
 ostream& operator<<(ostream& os, const IntersectionEvent& e)
 {
     os << "(" << e.x << ", " << (e.open ? "1" : "-1") << ")";
     return os;
 }
 ostream_iterator<const IntersectionEvent&> out_it2 (cout,", ");
-
+*/
 int solution(const vector<int>& A)
 {
     const uint N = A.size();
@@ -41,8 +31,10 @@ int solution(const vector<int>& A)
     for(uint i = 0; i < N; ++i)
     {
         int r = A[i];
-        intersections.push_back(IntersectionEvent(true, i-r, i));
-        intersections.push_back(IntersectionEvent(false, i+r, i));
+        if(r < 0)
+            throw runtime_error("Invalid negative radius");
+        intersections.push_back(IntersectionEvent(true, long(i)-r));
+        intersections.push_back(IntersectionEvent(false, long(i)+r));
     }
     sort(intersections.begin(), intersections.end(), [&](const IntersectionEvent& a, const IntersectionEvent& b) {
         if(a.x == b.x)
@@ -65,12 +57,15 @@ int solution(const vector<int>& A)
         {
             openCircles -= 1;
         }
-        if(nbIntersections >= 1E6)
+        if(nbIntersections > 1E7)
             return -1;
     }
     //cout << "Result: " << nbIntersections << endl << endl;
     return nbIntersections;
 }
+
+#include <gtest/gtest.h>
+#include <limits.h>
 
 TEST(NumberOfDiscIntersections, Trivial)
 {
@@ -91,4 +86,8 @@ TEST(NumberOfDiscIntersections, Trivial)
     EXPECT_EQ(solution(vector<int>{1, 5, 2, 1, 4, 0}), 11);
 }
 
-
+TEST(NumberOfDiscIntersections, Overflow)
+{
+    EXPECT_THROW(solution(vector<int>{-2, -3}), runtime_error);
+    EXPECT_EQ(solution(vector<int>{INT_MAX, INT_MAX-1}), 1);
+}
