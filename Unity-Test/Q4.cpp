@@ -45,7 +45,7 @@ int solution(const vector<int> &A)
     {
         if(i-start+1 > min_days) // we don't consider solutions larger than the current one
         {
-            S.remove(A[start]);
+            S.remove(A[start]); // sliding window remove from start
             start++;
         }
         S.add(A[i]);

@@ -13,6 +13,7 @@ int solution(const vector<int> &A);
 
 TEST(Q4, Trivial)
 {
+    EXPECT_EQ(solution(vector<int>{1, 2, 3, 3, 4, 4, 4, 1}), 5); // test sliding window
     EXPECT_EQ(solution(vector<int>{7,3,7,3,1,3,4,1}), 5);
     EXPECT_EQ(solution(vector<int>{2,1,1,3,2,1,1,3}), 3);
     EXPECT_EQ(solution(vector<int>{7,5,2,7,2,7,4,7}), 6);
